@@ -1,3 +1,7 @@
+# My folder for sensitive information
+# that I don't want to commit
+DONOTCOMMIT/
+
 # Build results
 [Dd]ebug/
 [Rr]elease/
