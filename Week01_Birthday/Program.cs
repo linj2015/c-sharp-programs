@@ -8,7 +8,7 @@ class Program
     {
         Console.WriteLine("Hello!");
 
-        float longestLivedAge = 122F + 164 / 365F; // 122 yrs 164 days
+        const float longestLivedAge = 122F + 164 / 365F; // 122 yrs 164 days
         float age;
         int daysUntilNextBirthday;
         DateTime birthday = new DateTime();
@@ -26,15 +26,17 @@ class Program
                 continue;
             }
 
-            // Calculate
-            BirthdayCalculations(birthday, out age, out daysUntilNextBirthday);
-
-            // Check age range
+            // Check date range
             if (birthday > DateTime.Today)
             {
                 Console.WriteLine("The birthday you've entered is in the future! Please enter a valid birthday.");
                 continue;
             }
+
+            // Calculate
+            BirthdayCalculations(birthday, out age, out daysUntilNextBirthday);
+
+            // Check age range
             if (age > longestLivedAge)
             {
                 Console.WriteLine("You shouldn't be older than the oldest person ever lived. Please enter a valid birthday.");
