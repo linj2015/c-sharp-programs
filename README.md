@@ -3,11 +3,12 @@
 Repository for the C# programs I built for practice.  
 
 Week 1:
-* Visual Studio console application using .NET framework  
+* Visual Studio console application using .NET framework 4.6.1  
 
 Week 2:
 * SimpleSMSWebpage - ASP.NET Web form
 * SimpleSMSWebapp - ASP.NET Web MVC, Twilio API
+* KnockKnockJokes - ASP.NET Session state
 
 ## Built With
 
