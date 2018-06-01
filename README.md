@@ -8,7 +8,7 @@ Week 1:
 Week 2:
 * SimpleSMSWebpage - ASP.NET Web form
 * SimpleSMSWebapp - ASP.NET Web MVC, Twilio API
-* KnockKnockJokes - ASP.NET Session state
+* KnockKnockJokes - practice using session states
 
 ## Built With
 
