@@ -233,6 +233,12 @@
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectBirthday\ProjectBirthday.csproj">
+      <Project>{2a2c1468-3f54-45f4-9f4a-021f562a4ead}</Project>
+      <Name>ProjectBirthday</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
