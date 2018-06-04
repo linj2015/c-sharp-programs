@@ -77,24 +77,41 @@ namespace KnockKnockJokes.Controllers
             // generate response
             if (requestBody.Contains("joke"))
             {
+                // user can ask for a new joke at any point in the conversation
                 responseString = "Knock knock";
                 status = Status.PERSON;
                 jokeID = random.Next() % 20;
             }
-            else if (status == Status.PERSON && requestBody.Contains("Who's there"))
+            else if (status == Status.PERSON)
             {
-                responseString = jokes[jokeID].Person + ".";
-                status = Status.ANSWER;
+                if (requestBody.Contains("Who's there"))
+                {
+                    responseString = jokes[jokeID].Person + ".";
+                    status = Status.ANSWER;
+                }
+                else
+                {
+                    // trying to help the user...
+                    responseString = "Try asking me \"Who's there?\"";
+                }
             }
-            else if (status == Status.ANSWER && requestBody.Contains(jokes[jokeID].Person + " who"))
+            else if (status == Status.ANSWER)
             {
-                responseString = jokes[jokeID].Answer;
-                Session["jokeStatus"] = null;
-                Session["jokeID"] = null;
+                if (requestBody.Contains(jokes[jokeID].Person + " who"))
+                {
+                    responseString = jokes[jokeID].Answer;
+                    Session["jokeStatus"] = null;
+                    Session["jokeID"] = null;
+                }
+                else
+                {
+                    // trying to help the user...
+                    responseString = $"Try asking me \"{jokes[jokeID].Person} who?\"";
+                }
             }
             else
             {
-                responseString = "I don't understand what you said, but I know a great knock-knock joke.";
+                responseString = "I don't understand what you said, but I know some great knock-knock jokes.";
                 Session["jokeStatus"] = null;
                 Session["jokeID"] = null;
                 messagingResponse.Message(responseString);
