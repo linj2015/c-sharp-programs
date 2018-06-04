@@ -14,12 +14,18 @@ namespace KnockKnockJokes.Controllers
     public class SmsController : TwilioController
     {
         // enum to show conversation status
-        enum Status { KNOCK, PERSON, ANSWER };
+        enum Status
+        {
+            NONE, // user has not started the conversation
+            PERSON, // user asked who's there
+            ANSWER // user asked {person} who
+        };
 
         // POST: Sms
         [HttpPost]
         public TwiMLResult Index()
         {
+            Random random = new Random();
 
             //string from = Request.Form["From"];
 
@@ -28,31 +34,20 @@ namespace KnockKnockJokes.Controllers
             var messagingResponse = new MessagingResponse();
 
 
-            int? lineNumber = 0;
+            Status status;
             int jokeID;
 
             // get the session varible if it exists
-            if (Session["lineNumber"] != null && Session["jokeID"] != null)
+            if (Session["jokeStatus"] != null && Session["jokeID"] != null)
             {
-                lineNumber = (int)Session["lineNumber"];
+                status = (Status)Session["jokeStatus"];
                 jokeID = (int)Session["jokeID"];
             }
             else
             {
-                Random random = new Random();
+                status = Status.NONE;
                 jokeID = random.Next() % 20;
             }
-            //else // started a new conversation
-            //{
-            //    if (!requestBody.Contains("joke"))
-            //    {
-            //        responseString = "I don't understand what you said, but I know a great knock-knock joke.";
-            //        messagingResponse.Message(responseString);
-            //        return TwiML(messagingResponse);
-            //    }
-            //}
-
-            //Joke theOnlyJoke = new Joke("Dozen", "Dozen anybody want to let me in?");
 
             // make a collection of jokes
             var jokes = new Dictionary<int, Joke>()
@@ -78,36 +73,36 @@ namespace KnockKnockJokes.Controllers
                 {18, new Joke("Mary", "Mary Christmas!")},
                 {19, new Joke("Wanda", "Wanda where I put my car keys.")},
             };
-            //jokeID = 7;
-            if (lineNumber == 0 && requestBody.Contains("joke"))
+
+            // generate response
+            if (requestBody.Contains("joke"))
             {
                 responseString = "Knock knock";
-                lineNumber = 2;
+                status = Status.PERSON;
+                jokeID = random.Next() % 20;
             }
-            else if (lineNumber == 2 && requestBody.Contains("Who's there"))
+            else if (status == Status.PERSON && requestBody.Contains("Who's there"))
             {
                 responseString = jokes[jokeID].Person + ".";
-                lineNumber = 4;
+                status = Status.ANSWER;
             }
-            else if (lineNumber == 4 && requestBody.Contains(jokes[jokeID].Person + " who"))
+            else if (status == Status.ANSWER && requestBody.Contains(jokes[jokeID].Person + " who"))
             {
                 responseString = jokes[jokeID].Answer;
-                lineNumber = null;
+                Session["jokeStatus"] = null;
+                Session["jokeID"] = null;
             }
             else
             {
                 responseString = "I don't understand what you said, but I know a great knock-knock joke.";
-                Session["lineNumber"] = null;
+                Session["jokeStatus"] = null;
+                Session["jokeID"] = null;
                 messagingResponse.Message(responseString);
                 return TwiML(messagingResponse);
             }
 
-
-            //// increment it
-            //lineNumber++;
-
-            // save it
-            Session["lineNumber"] = lineNumber;
+            // save the session variables
+            Session["jokeStatus"] = status;
             Session["jokeID"] = jokeID;
 
             //// make an associative array of senders we know, indexed by phone number
@@ -132,7 +127,7 @@ namespace KnockKnockJokes.Controllers
             //}
 
             //var response = new MessagingResponse();
-            //response.Message($"{name} has messaged {to} {lineNumber} times");
+            //response.Message($"{name} has messaged {to} {count} times");
 
             messagingResponse.Message(responseString);
             return TwiML(messagingResponse);
@@ -157,8 +152,8 @@ namespace KnockKnockJokes
     /// <summary>
     /// Class for a knock-knock joke conversation. (Hopefully) can be stored in a cookie.
     /// </summary>
-    public class Conversation
-    {
+    //public class Conversation
+    //{
         // The phone number that asked for the joke
         //string From { get; set; }
 
@@ -167,9 +162,9 @@ namespace KnockKnockJokes
         //DateTime ExpireTime { get; set; }
 
         // The line number that the joke is currently on
-        //int LineNumber { get; set; }
+        //int jokeStatus { get; set; }
 
         // Which joke from the collection
         //int JokeID { get; set; }
-    }
+    //}
 }
