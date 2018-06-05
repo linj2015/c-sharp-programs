@@ -56,7 +56,7 @@ namespace ProjectBirthday
             DateTime nextBirthday = new DateTime(DateTime.Today.Year, birthday.Month, birthday.Day);
             if (nextBirthday < DateTime.Today) // Check if your birthday this year has passed already
             {
-                nextBirthday.AddYears(1);
+                nextBirthday = nextBirthday.AddYears(1);
             }
             TimeSpan timeSpan = nextBirthday - DateTime.Today;
             daysUntilNextBirthday = timeSpan.Days;
