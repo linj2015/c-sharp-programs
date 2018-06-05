@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSMSWebapp", "SimpleSM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectBirthday", "ProjectBirthday\ProjectBirthday.csproj", "{2A2C1468-3F54-45F4-9F4A-021F562A4EAD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectBirthdayTests", "SimpleSMSWebappTests\ProjectBirthdayTests.csproj", "{88BA31FF-E6F3-4F4E-A774-8F796DFFCDEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{2A2C1468-3F54-45F4-9F4A-021F562A4EAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A2C1468-3F54-45F4-9F4A-021F562A4EAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A2C1468-3F54-45F4-9F4A-021F562A4EAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88BA31FF-E6F3-4F4E-A774-8F796DFFCDEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88BA31FF-E6F3-4F4E-A774-8F796DFFCDEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88BA31FF-E6F3-4F4E-A774-8F796DFFCDEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88BA31FF-E6F3-4F4E-A774-8F796DFFCDEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
