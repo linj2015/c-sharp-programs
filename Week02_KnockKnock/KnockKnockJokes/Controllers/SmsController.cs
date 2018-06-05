@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Web;
 using System.Web.Mvc;
 using Twilio.AspNet.Mvc;
 using Twilio.TwiML;
@@ -22,7 +21,7 @@ namespace KnockKnockJokes.Controllers
 
             // using Dictionary to pass in session variables
             // because the get/set syntax is the same as HttpSessionStateBase
-            Dictionary<string, Object> sessionVars = new Dictionary<string, object>();
+            Dictionary<string, Object> sessionVars = new Dictionary<string, Object>();
             sessionVars["jokeStatus"] = Session["jokeStatus"];
             sessionVars["jokeID"] = Session["jokeID"];
 
@@ -55,15 +54,25 @@ namespace KnockKnockJokes
 
     public class KnockKnockJokes
     {
-        // a collection of jokes
         private Dictionary<int, Joke> jokes;
 
-        // enum to show conversation status
-        private enum Status
+        /// <summary>
+        /// enum to show conversation status.
+        /// </summary>
+        enum Status
         {
-            NONE, // user has not started the conversation
-            PERSON, // user asked who's there
-            ANSWER // user asked {person} who
+            /// <summary>
+            /// User has not started the conversation.
+            /// </summary>
+            NONE,
+            /// <summary>
+            /// User has asked who's there.
+            /// </summary>
+            PERSON,
+            /// <summary>
+            /// User has asked {person} who.
+            /// </summary>
+            ANSWER
         };
 
         public KnockKnockJokes()
