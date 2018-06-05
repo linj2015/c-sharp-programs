@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Web;
 using System.Web.Mvc;
 using Twilio.AspNet.Mvc;
 using Twilio.TwiML;
@@ -13,44 +14,61 @@ namespace KnockKnockJokes.Controllers
 {
     public class SmsController : TwilioController
     {
+        // POST: Sms
+        [HttpPost]
+        public TwiMLResult Index()
+        {
+            string requestBody = Request.Form["Body"];
+
+            // using Dictionary to pass in session variables
+            // because the get/set syntax is the same as HttpSessionStateBase
+            Dictionary<string, Object> sessionVars = new Dictionary<string, object>();
+            sessionVars["jokeStatus"] = Session["jokeStatus"];
+            sessionVars["jokeID"] = Session["jokeID"];
+
+            KnockKnockJokes program = new KnockKnockJokes();
+            string responseString = program.ProcessRequest(requestBody, ref sessionVars);
+
+            Session["jokeStatus"] = sessionVars["jokeStatus"];
+            Session["jokeID"] = sessionVars["jokeID"];
+
+            var messagingResponse = new MessagingResponse();
+            messagingResponse.Message(responseString);
+            return TwiML(messagingResponse);
+        }
+    }
+}
+
+namespace KnockKnockJokes
+{
+    public struct Joke
+    {
+        public string Person { get; }
+        public string Answer { get; } 
+
+        public Joke(string person, string answer)
+        {
+            Person = person;
+            Answer = answer;
+        }
+    }
+
+    public class KnockKnockJokes
+    {
+        // a collection of jokes
+        private Dictionary<int, Joke> jokes;
+
         // enum to show conversation status
-        enum Status
+        private enum Status
         {
             NONE, // user has not started the conversation
             PERSON, // user asked who's there
             ANSWER // user asked {person} who
         };
 
-        // POST: Sms
-        [HttpPost]
-        public TwiMLResult Index()
+        public KnockKnockJokes()
         {
-            Random random = new Random();
-
-            //string from = Request.Form["From"];
-
-            string requestBody = Request.Form["Body"];
-            string responseString = "";
-            var messagingResponse = new MessagingResponse();
-
-
-            Status status;
-            int jokeID;
-
-            // get the session varible if it exists
-            if (Session["jokeStatus"] != null && Session["jokeID"] != null)
-            {
-                status = (Status)Session["jokeStatus"];
-                jokeID = (int)Session["jokeID"];
-            }
-            else
-            {
-                status = Status.NONE;
-                jokeID = random.Next() % 20;
-            }
-
-            // make a collection of jokes
-            var jokes = new Dictionary<int, Joke>()
+            jokes = new Dictionary<int, Joke>()
             {
                 {0, new Joke("Dozen", "Dozen anybody want to let me in?")},
                 {1, new Joke("Robin", "Robin you—hand over the cash!")},
@@ -73,6 +91,27 @@ namespace KnockKnockJokes.Controllers
                 {18, new Joke("Mary", "Mary Christmas!")},
                 {19, new Joke("Wanda", "Wanda where I put my car keys.")},
             };
+        }
+
+        public string ProcessRequest(string requestBody, ref Dictionary<string, Object> Session)
+        {
+            Random random = new Random();
+
+            string responseString = "";
+            Status status;
+            int jokeID;
+
+            // get the session varible if it exists
+            if (Session["jokeStatus"] != null && Session["jokeID"] != null)
+            {
+                status = (Status)Session["jokeStatus"];
+                jokeID = (int)Session["jokeID"];
+            }
+            else
+            {
+                status = Status.NONE;
+                jokeID = random.Next() % 20;
+            }
 
             // generate response
             if (requestBody.Contains("joke"))
@@ -114,55 +153,14 @@ namespace KnockKnockJokes.Controllers
                 responseString = "I don't understand what you said, but I know some great knock-knock jokes.";
                 Session["jokeStatus"] = null;
                 Session["jokeID"] = null;
-                messagingResponse.Message(responseString);
-                return TwiML(messagingResponse);
+                return responseString;
             }
-
+            
             // save the session variables
             Session["jokeStatus"] = status;
             Session["jokeID"] = jokeID;
 
-            //// make an associative array of senders we know, indexed by phone number
-            //var people = new Dictionary<string, string>()
-            //{
-            //    {"+14158675308", "Rey"},
-            //    {"+14158675310", "Finn"},
-            //    {"+14158675311", "Chewy"}
-            //};
-
-
-
-
-
-            //// if the sender is known, then greet them by name
-            //var name = "Friend";
-            //var from = Request.Form["From"];
-            //var to = Request.Form["To"];
-            //if (people.ContainsKey(from))
-            //{
-            //    name = people[from];
-            //}
-
-            //var response = new MessagingResponse();
-            //response.Message($"{name} has messaged {to} {count} times");
-
-            messagingResponse.Message(responseString);
-            return TwiML(messagingResponse);
-        }
-    }
-}
-
-namespace KnockKnockJokes
-{
-    public struct Joke
-    {
-        public string Person { get; }
-        public string Answer { get; } 
-
-        public Joke(string person, string answer)
-        {
-            Person = person;
-            Answer = answer;
+            return responseString;
         }
     }
 
@@ -171,17 +169,17 @@ namespace KnockKnockJokes
     /// </summary>
     //public class Conversation
     //{
-        // The phone number that asked for the joke
-        //string From { get; set; }
+    //    The phone number that asked for the joke
+    //    string From { get; set; }
 
-        // The time the conversation was last active + 4 hrs. 
-        // (Twilio cookies expire after 4 hrs of inactivity)
-        //DateTime ExpireTime { get; set; }
+    //    The time the conversation was last active + 4 hrs.
+    //     (Twilio cookies expire after 4 hrs of inactivity)
+    //    DateTime ExpireTime { get; set; }
 
-        // The line number that the joke is currently on
-        //int jokeStatus { get; set; }
+    //    The line number that the joke is currently on
+    //    int jokeStatus { get; set; }
 
-        // Which joke from the collection
-        //int JokeID { get; set; }
+    //    Which joke from the collection
+    //    int JokeID { get; set; }
     //}
 }
