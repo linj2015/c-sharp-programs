@@ -77,6 +77,11 @@ namespace KnockKnockJokes
 
         public KnockKnockJokes()
         {
+            // zipper-mouth face emoji
+            string strZipperMouthFace = ""
+            + (char)int.Parse("D83EDD10".Substring(0, 4), System.Globalization.NumberStyles.HexNumber)
+            + (char)int.Parse("D83EDD10".Substring(4, 4), System.Globalization.NumberStyles.HexNumber);
+
             jokes = new Dictionary<int, Joke>()
             {
                 {0, new Joke("Dozen", "Dozen anybody want to let me in?")},
@@ -86,7 +91,7 @@ namespace KnockKnockJokes
                 {4, new Joke("Art", "R2-D2, of course.")},
                 {5, new Joke("Kanga", "Actually, it's kangaroo.")},
                 {6, new Joke("Déja", "Knock! Knock!")},
-                {7, new Joke("No one", "🤐 \u0001F910")},
+                {7, new Joke("No one", strZipperMouthFace)},
                 {8, new Joke("An extraterrestrial", "Wait–how many extraterrestrials do you know?")},
                 {9, new Joke("Spell", "W-H-O")},
                 {10, new Joke("Two knee", "Tunee fish!")},
@@ -150,6 +155,7 @@ namespace KnockKnockJokes
                     responseString = jokes[jokeID].Answer;
                     Session["jokeStatus"] = null;
                     Session["jokeID"] = null;
+                    return responseString;
                 }
                 else
                 {
