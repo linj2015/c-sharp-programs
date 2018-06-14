@@ -42,13 +42,13 @@ namespace KnockKnockJokes
 {
     public struct Joke
     {
-        public string Person { get; }
-        public string Answer { get; } 
+        public string Setup { get; }
+        public string Punchline { get; } 
 
-        public Joke(string person, string answer)
+        public Joke(string setup, string punchline)
         {
-            Person = person;
-            Answer = answer;
+            Setup = setup;
+            Punchline = punchline;
         }
     }
 
@@ -68,11 +68,11 @@ namespace KnockKnockJokes
             /// <summary>
             /// User has asked who's there.
             /// </summary>
-            PERSON,
+            SETUP,
             /// <summary>
             /// User has asked {person} who.
             /// </summary>
-            ANSWER
+            PUNCHLINE
         };
 
         public KnockKnockJokes()
@@ -132,15 +132,15 @@ namespace KnockKnockJokes
             {
                 // user can ask for a new joke at any point in the conversation
                 responseString = "Knock knock";
-                status = Status.PERSON;
+                status = Status.SETUP;
                 jokeID = random.Next() % 20;
             }
-            else if (status == Status.PERSON)
+            else if (status == Status.SETUP)
             {
                 if (requestBody.Contains("Who's there"))
                 {
-                    responseString = jokes[jokeID].Person + ".";
-                    status = Status.ANSWER;
+                    responseString = jokes[jokeID].Setup + ".";
+                    status = Status.PUNCHLINE;
                 }
                 else
                 {
@@ -148,11 +148,11 @@ namespace KnockKnockJokes
                     responseString = "Try asking me \"Who's there?\"";
                 }
             }
-            else if (status == Status.ANSWER)
+            else if (status == Status.PUNCHLINE)
             {
-                if (requestBody.Contains(jokes[jokeID].Person + " who"))
+                if (requestBody.Contains(jokes[jokeID].Setup + " who"))
                 {
-                    responseString = jokes[jokeID].Answer;
+                    responseString = jokes[jokeID].Punchline;
                     Session["jokeStatus"] = null;
                     Session["jokeID"] = null;
                     return responseString;
@@ -160,7 +160,7 @@ namespace KnockKnockJokes
                 else
                 {
                     // trying to help the user...
-                    responseString = $"Try asking me \"{jokes[jokeID].Person} who?\"";
+                    responseString = $"Try asking me \"{jokes[jokeID].Setup} who?\"";
                 }
             }
             else
